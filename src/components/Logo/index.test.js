@@ -12,13 +12,13 @@ describe("Logo component", () => {
 });
 
 describe("Logo component", () => {
-  describe("Quand le logo component et créé", () => {
-    it("La valeur par defaut de l'attribut width et de 130", () => {
+  describe("When a logo is created", () => {
+    it("the witdh attibut default value is 130", () => {
       render(<Logo />);
       expect(screen.getByTestId("logo").getAttribute("width")).toEqual("130");
     });
   });
-  describe("Quand le logo component et créé avec la valeur pour size egal large l'attribut width et de 160", () => {
+  describe("When a large logo is created the witdh attibut default value is  160", () => {
     it("", () => {
       render(<Logo size="large" />);
       expect(screen.getByTestId("logo").getAttribute("width")).toEqual("160");

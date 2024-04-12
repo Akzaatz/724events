@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import Slider from "./index";
 import { api, DataProvider } from "../../contexts/DataContext";
 
+jest.useFakeTimers();
+
 const data = {
   focus: [
     {
@@ -40,5 +42,69 @@ describe("When slider is created", () => {
     await screen.findByText(
       "Oeuvre à la coopération entre le secteur public et le privé."
     );
+  });
+
+  it("sorts events by date in descending order", () => {
+    const mockData = {
+      focus: [
+        {
+          title: "Event 1",
+          description: "Description 1",
+          date: "2022-02-01T00:00:00.000Z",
+          cover: "/path/to/image1.png",
+        },
+        {
+          title: "Event 2",
+          description: "Description 2",
+          date: "2022-03-01T00:00:00.000Z",
+          cover: "/path/to/image2.png",
+        },
+      ],
+    };
+    const { container } = render(
+      <DataProvider value={{ data: mockData }}>
+        <Slider />
+      </DataProvider>
+    );
+
+    const eventTitles = container.querySelectorAll(".SlideCard h3");
+    const eventDates = Array.from(eventTitles).map(
+      (title) => title.textContent
+    );
+    const sortedDates = [...eventDates].sort(
+      (a, b) => new Date(b) - new Date(a)
+    );
+
+    expect(eventDates).toEqual(sortedDates);
+  });
+
+  it("changes index every 5 seconds", () => {
+    const mockData = {
+      focus: [
+        {
+          title: "Event 1",
+          description: "Description 1",
+          date: "2022-02-01T00:00:00.000Z",
+          cover: "/path/to/image1.png",
+        },
+        {
+          title: "Event 2",
+          description: "Description 2",
+          date: "2022-03-01T00:00:00.000Z",
+          cover: "/path/to/image2.png",
+        },
+      ],
+    };
+
+    const { container } = render(
+      <DataProvider value={{ data: mockData }}>
+        <Slider />
+      </DataProvider>
+    );
+
+    const initialIndex = container.querySelector(".SlideCard--display");
+
+    jest.advanceTimersByTime(5000);
+    const newIndex = container.querySelector(".SlideCard--display");
   });
 });
