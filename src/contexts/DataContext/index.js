@@ -20,11 +20,15 @@ export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [last, setLast] = useState(null);
+
   const getData = useCallback(async () => {
     try {
       const loadedData = await api.loadData();
+      const sortedEvents = loadedData.events.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
       setData(loadedData);
-      setLast(loadedData.events[loadedData.events.length - 1]);
+      setLast(sortedEvents[0]);
     } catch (err) {
       setError(err);
     }
